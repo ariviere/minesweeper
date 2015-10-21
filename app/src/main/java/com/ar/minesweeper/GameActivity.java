@@ -4,6 +4,10 @@ import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+/**
+ * Game activity where the board is shown
+ * and where you can play the game
+ */
 public class GameActivity extends AppCompatActivity {
 
     private int mBoardSize;
