@@ -1,4 +1,4 @@
-package com.ar.minesweeper.game;
+package com.ar.minesweeper;
 
 /**
  * Created by ariviere on 21/10/15.
