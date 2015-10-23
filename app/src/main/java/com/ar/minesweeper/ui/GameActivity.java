@@ -1,41 +1,69 @@
 package com.ar.minesweeper.ui;
 
-import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.util.SparseArray;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.GridView;
+import android.widget.ImageView;
 
 import com.ar.minesweeper.GameConfiguration;
 import com.ar.minesweeper.R;
 import com.ar.minesweeper.model.Board;
-import com.ar.minesweeper.model.BoardSquare;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Game activity where the board is shown
  * and where you can play the game
  */
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements View.OnClickListener,
+    SquaresAdapter.Listener {
 
     private Board mBoard;
     private GridView mBoardView;
+    private SquaresAdapter mSquaresAdapter;
+    private ImageView mStatusImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        initStatusImage();
+
         initBoardModel();
 
         setBoardSize();
 
         initBoardUI();
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.status_button) {
+            mStatusImage.setImageResource(R.drawable.ic_happy);
+            initBoardModel();
+            setBoardSize();
+            initBoardUI();
+        }
+    }
+
+    @Override
+    public void onMineClicked() {
+        mBoard.setAllUncovered();
+        mSquaresAdapter.notifyDataSetChanged();
+        mStatusImage.setImageResource(R.drawable.ic_sad);
+    }
+
+    /**
+     * init the status image
+     * click to start new game
+     */
+    private void initStatusImage() {
+        mStatusImage = (ImageView) findViewById(R.id.status_button);
+
+        mStatusImage.setOnClickListener(this);
     }
 
     /**
@@ -72,6 +100,8 @@ public class GameActivity extends AppCompatActivity {
         boardLayoutParams.gravity = Gravity.CENTER;
         mBoardView.setLayoutParams(boardLayoutParams);
         mBoardView.setNumColumns(GameConfiguration.BOARD_SIZE);
-        mBoardView.setAdapter(new SquaresAdapter(this, mBoard));
+        mSquaresAdapter = new SquaresAdapter(this, mBoard);
+        mSquaresAdapter.setListener(this);
+        mBoardView.setAdapter(mSquaresAdapter);
     }
 }

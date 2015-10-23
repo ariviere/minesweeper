@@ -2,4 +2,5 @@
     <dimen name="board_margin">8dp</dimen>
     <dimen name="square_text_size">18sp</dimen>
     <dimen name="square_image_padding">6dp</dimen>
+    <dimen name="status_image_padding">6dp</dimen>
 </resources>

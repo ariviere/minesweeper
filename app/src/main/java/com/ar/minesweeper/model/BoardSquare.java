@@ -9,6 +9,7 @@ public class BoardSquare {
     private boolean mHasMine;
     private int mAdjacentMines = 0;
     private boolean mIsUncovered;
+    private boolean mIsFailedSquare = false;
 
     /**
      * determine if a square has a mine
@@ -55,5 +56,21 @@ public class BoardSquare {
      */
     public void setIsUncovered(boolean isUncovered) {
         mIsUncovered = isUncovered;
+    }
+
+    /**
+     * to know if the square has been clicked and failed (contains mine)
+     * @return true if the square has been failed
+     */
+    public boolean hasFailedSquare() {
+        return mIsFailedSquare;
+    }
+
+    /**
+     * to know if the square has been clicked and failed (contains mine)
+     * @param isFailedSquare true if the square has been failed
+     */
+    public void setIsFailedSquare(boolean isFailedSquare) {
+        mIsFailedSquare = isFailedSquare;
     }
 }

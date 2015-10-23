@@ -22,6 +22,7 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
     private TextView mSquareText;
 
     private BoardSquare mSquare;
+    private Listener mListener;
 
     public SquareView(Context context) {
         super(context);
@@ -49,25 +50,39 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
 
     @Override
     public void onClick(View view) {
-        setBackgroundResource(R.color.background_material_light);
+        mSquare.setIsUncovered(true);
+        uncoverSquare();
 
         if (mSquare.hasMine()) {
-            showMineImage();
-        }
-        else if (mSquare.getAdjacentMines() > 0){
-            showMinesCount();
+            mSquare.setIsFailedSquare(true);
         }
     }
 
     @Override
     public boolean onLongClick(View view) {
-        setBackgroundResource(R.color.background_material_light);
+            setBackgroundResource(R.color.background_material_light);
         showFlagImage();
         return false;
     }
 
+    /**
+     * set model of the square view
+     * @param square current square of the board
+     */
     public void setModel(BoardSquare square) {
         mSquare = square;
+
+        if (mSquare.isUncovered()) {
+            uncoverSquare();
+        }
+    }
+
+    /**
+     * set listener for the square view
+     * @param listener
+     */
+    public void setListener(Listener listener) {
+        mListener = listener;
     }
 
     private void init(Context context) {
@@ -99,5 +114,30 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
         mSquareText.setVisibility(View.GONE);
     }
 
+    private void uncoverSquare() {
+        if (!mSquare.hasFailedSquare()) {
+            setBackgroundResource(R.color.background_material_light);
+        } else {
+            setBackgroundResource(R.color.light_red);
+        }
 
+        if (mSquare.hasMine()) {
+            showMineImage();
+
+            mListener.onMineClicked();
+        }
+        else if (mSquare.getAdjacentMines() > 0){
+            showMinesCount();
+        }
+    }
+
+    /**
+     * Listener for the square view
+     */
+    public interface Listener {
+        /**
+         * Triggered when a user click on a mine
+         */
+        void onMineClicked();
+    }
 }

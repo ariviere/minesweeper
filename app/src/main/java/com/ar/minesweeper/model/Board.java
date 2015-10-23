@@ -160,4 +160,14 @@ public class Board {
             mBoardSquares[i][j + 1].addAdjacentMine();
         }
     }
+
+    public void setAllUncovered() {
+        for (int i = 0 ; i < GameConfiguration.BOARD_SIZE ; i++) {
+            for (int j = 0 ; j < GameConfiguration.BOARD_SIZE ; j++) {
+                if (mBoardSquares[i][j].hasMine()) {
+                    mBoardSquares[i][j].setIsUncovered(true);
+                }
+            }
+        }
+    }
 }
