@@ -16,6 +16,9 @@ public class Board {
     private BoardSquare[][] mBoardSquares;
     private int mBoardPixelsSize;
 
+    /**
+     * constructor
+     */
     public Board() {
 
         // generate mines position
@@ -161,9 +164,12 @@ public class Board {
         }
     }
 
-    public void setAllUncovered() {
-        for (int i = 0 ; i < GameConfiguration.BOARD_SIZE ; i++) {
-            for (int j = 0 ; j < GameConfiguration.BOARD_SIZE ; j++) {
+    /**
+     * to uncover all the mines (when losing the game)
+     */
+    public void uncoverMines() {
+        for (int i = 0; i < GameConfiguration.BOARD_SIZE; i++) {
+            for (int j = 0; j < GameConfiguration.BOARD_SIZE; j++) {
                 if (mBoardSquares[i][j].hasMine()) {
                     mBoardSquares[i][j].setIsUncovered(true);
                 }

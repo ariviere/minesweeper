@@ -16,7 +16,7 @@ import com.ar.minesweeper.model.BoardSquare;
  * Display a board square on the screen
  */
 public class SquareView extends FrameLayout implements View.OnClickListener,
-    View.OnLongClickListener {
+        View.OnLongClickListener {
 
     private ImageView mSquareImage;
     private TextView mSquareText;
@@ -24,6 +24,10 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
     private BoardSquare mSquare;
     private Listener mListener;
 
+    /**
+     * constructor
+     * @param context context
+     */
     public SquareView(Context context) {
         super(context);
 
@@ -32,6 +36,11 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
         }
     }
 
+    /**
+     * constructor
+     * @param context context
+     * @param attrs attrs
+     */
     public SquareView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -40,6 +49,12 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
         }
     }
 
+    /**
+     * constructor
+     * @param context context
+     * @param attrs attrs
+     * @param defStyleAttr defStyleAttr
+     */
     public SquareView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
@@ -60,13 +75,14 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
 
     @Override
     public boolean onLongClick(View view) {
-            setBackgroundResource(R.color.background_material_light);
+        setBackgroundResource(R.color.background_material_light);
         showFlagImage();
         return false;
     }
 
     /**
      * set model of the square view
+     *
      * @param square current square of the board
      */
     public void setModel(BoardSquare square) {
@@ -79,7 +95,8 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
 
     /**
      * set listener for the square view
-     * @param listener
+     *
+     * @param listener listener from the squaresAdapter
      */
     public void setListener(Listener listener) {
         mListener = listener;
@@ -125,8 +142,7 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
             showMineImage();
 
             mListener.onMineClicked();
-        }
-        else if (mSquare.getAdjacentMines() > 0){
+        } else if (mSquare.getAdjacentMines() > 0) {
             showMinesCount();
         }
     }

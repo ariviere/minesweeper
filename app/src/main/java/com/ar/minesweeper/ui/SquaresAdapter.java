@@ -19,6 +19,11 @@ public class SquaresAdapter extends BaseAdapter implements SquareView.Listener {
     private Board mBoard;
     private Listener mListener;
 
+    /**
+     * constructor
+     * @param context context of the app
+     * @param board board with squares
+     */
     public SquaresAdapter(Context context, Board board) {
         mContext = context;
         mBoard = board;
@@ -44,13 +49,18 @@ public class SquaresAdapter extends BaseAdapter implements SquareView.Listener {
         SquareView squareView;
         if (view == null) {
             squareView = new SquareView(mContext);
-            squareView.setLayoutParams(new GridView.LayoutParams(mBoard.getSquarePixelsSize(), mBoard.getSquarePixelsSize()));
+            squareView.setLayoutParams(new GridView.LayoutParams(
+                    mBoard.getSquarePixelsSize(), mBoard.getSquarePixelsSize()));
             squareView.setPadding(0, 0, 0, 0);
-            squareView.setModel(mBoard.getBoardSquares()[i / GameConfiguration.BOARD_SIZE][i % GameConfiguration.BOARD_SIZE]);
+            squareView.setModel(mBoard.getBoardSquares()
+                    [i / GameConfiguration.BOARD_SIZE]
+                    [i % GameConfiguration.BOARD_SIZE]);
             squareView.setListener(this);
         } else {
             squareView = (SquareView) view;
-            squareView.setModel(mBoard.getBoardSquares()[i / GameConfiguration.BOARD_SIZE][i % GameConfiguration.BOARD_SIZE]);
+            squareView.setModel(mBoard.getBoardSquares()
+                    [i / GameConfiguration.BOARD_SIZE]
+                    [i % GameConfiguration.BOARD_SIZE]);
         }
 
         return squareView;
