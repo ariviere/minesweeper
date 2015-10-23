@@ -7,7 +7,7 @@ package com.ar.minesweeper.model;
 public class BoardSquare {
 
     private boolean mHasMine;
-    private int mAdjacentMines;
+    private int mAdjacentMines = 0;
     private boolean mIsUncovered;
 
     /**
@@ -35,11 +35,10 @@ public class BoardSquare {
     }
 
     /**
-     * number of mines adjacent to the square
-     * @param adjacentMines the number of mines adjacent
+     * add a mine adjacent
      */
-    public void setAdjacentMines(int adjacentMines) {
-        mAdjacentMines = adjacentMines;
+    public void addAdjacentMine() {
+        mAdjacentMines++;
     }
 
     /**

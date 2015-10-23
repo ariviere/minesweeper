@@ -1,8 +1,10 @@
 package com.ar.minesweeper.ui;
 
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.util.SparseArray;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.GridView;
@@ -10,6 +12,10 @@ import android.widget.GridView;
 import com.ar.minesweeper.GameConfiguration;
 import com.ar.minesweeper.R;
 import com.ar.minesweeper.model.Board;
+import com.ar.minesweeper.model.BoardSquare;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Game activity where the board is shown
@@ -25,20 +31,19 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        mBoard = new Board();
+        initBoardModel();
 
         setBoardSize();
 
-        mBoardView = (GridView) findViewById(R.id.board_view);
-
-        FrameLayout.LayoutParams boardLayoutParams = new FrameLayout.LayoutParams(
-                mBoard.getBoardPixelsSize(), mBoard.getBoardPixelsSize());
-        boardLayoutParams.gravity = Gravity.CENTER;
-        mBoardView.setLayoutParams(boardLayoutParams);
-        mBoardView.setNumColumns(GameConfiguration.BOARD_SIZE);
-        mBoardView.setAdapter(new SquaresAdapter(this, mBoard));
+        initBoardUI();
     }
 
+    /**
+     * init the model of the board (random mines, etc)
+     */
+    private void initBoardModel() {
+        mBoard = new Board();
+    }
 
     /**
      * set the board size according to the height and the width of the device
@@ -56,4 +61,17 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * display the ui elements of the board
+     */
+    private void initBoardUI() {
+        mBoardView = (GridView) findViewById(R.id.board_view);
+
+        FrameLayout.LayoutParams boardLayoutParams = new FrameLayout.LayoutParams(
+                mBoard.getBoardPixelsSize(), mBoard.getBoardPixelsSize());
+        boardLayoutParams.gravity = Gravity.CENTER;
+        mBoardView.setLayoutParams(boardLayoutParams);
+        mBoardView.setNumColumns(GameConfiguration.BOARD_SIZE);
+        mBoardView.setAdapter(new SquaresAdapter(this, mBoard));
+    }
 }

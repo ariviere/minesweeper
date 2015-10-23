@@ -45,6 +45,7 @@ public class SquaresAdapter extends BaseAdapter {
             squareView = new SquareView(mContext);
             squareView.setLayoutParams(new GridView.LayoutParams(mBoard.getSquarePixelsSize(), mBoard.getSquarePixelsSize()));
             squareView.setPadding(0, 0, 0, 0);
+            squareView.setModel(mBoard.getBoardSquares()[i / GameConfiguration.BOARD_SIZE][i % GameConfiguration.BOARD_SIZE]);
         } else {
             squareView = (SquareView) view;
         }

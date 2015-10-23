@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ar.minesweeper.R;
+import com.ar.minesweeper.model.BoardSquare;
 
 /**
  * Created by ariviere on 22/10/15.
@@ -19,6 +20,8 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
 
     private ImageView mSquareImage;
     private TextView mSquareText;
+
+    private BoardSquare mSquare;
 
     public SquareView(Context context) {
         super(context);
@@ -47,7 +50,13 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
     @Override
     public void onClick(View view) {
         setBackgroundResource(R.color.background_material_light);
-        showMinesCount();
+
+        if (mSquare.hasMine()) {
+            showMineImage();
+        }
+        else if (mSquare.getAdjacentMines() > 0){
+            showMinesCount();
+        }
     }
 
     @Override
@@ -55,6 +64,10 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
         setBackgroundResource(R.color.background_material_light);
         showFlagImage();
         return false;
+    }
+
+    public void setModel(BoardSquare square) {
+        mSquare = square;
     }
 
     private void init(Context context) {
@@ -71,7 +84,7 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
     private void showMinesCount() {
         mSquareImage.setVisibility(View.GONE);
         mSquareText.setVisibility(View.VISIBLE);
-        mSquareText.setText("4");
+        mSquareText.setText(String.valueOf(mSquare.getAdjacentMines()));
     }
 
     private void showMineImage() {
