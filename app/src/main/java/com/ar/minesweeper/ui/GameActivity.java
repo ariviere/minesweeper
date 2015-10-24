@@ -51,9 +51,19 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onMineClicked() {
-        mBoard.uncoverMines();
+        mBoard.setGameStatus(Board.GAME_LOST);
+        mBoard.uncoverMines(false);
         mSquaresAdapter.notifyDataSetChanged();
         mStatusImage.setImageResource(R.drawable.ic_sad);
+    }
+
+    @Override
+    public void onSquareDiscovered() {
+        if (mBoard.getSquaresToDiscover() == 0) {
+            mStatusImage.setImageResource(R.drawable.ic_sunglasses);
+            mBoard.uncoverMines(true);
+            mBoard.setGameStatus(Board.GAME_WON);
+        }
     }
 
     /**

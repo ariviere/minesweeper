@@ -58,11 +58,11 @@ public class SquaresAdapter extends BaseAdapter implements SquareView.Listener {
                     mBoard.getSquarePixelsSize(), mBoard.getSquarePixelsSize()));
             squareView.setPadding(0, 0, 0, 0);
 
-            squareView.setModel(mBoard.getBoardSquares()[squareY][squareX]);
+            squareView.setModel(mBoard.getBoardSquares()[squareY][squareX], mBoard.getGameStatus());
             squareView.setListener(this);
         } else {
             squareView = (SquareView) view;
-            squareView.setModel(mBoard.getBoardSquares()[squareY][squareX]);
+            squareView.setModel(mBoard.getBoardSquares()[squareY][squareX], mBoard.getGameStatus());
         }
 
         return squareView;
@@ -77,6 +77,12 @@ public class SquaresAdapter extends BaseAdapter implements SquareView.Listener {
     public void onZeroAdjacentClicked(BoardSquare square) {
         mBoard.uncoverAdjacentZero(square);
         notifyDataSetChanged();
+    }
+
+    @Override
+    public void onSquareDiscovered() {
+        mBoard.decrementSquaresToDiscover();
+        mListener.onSquareDiscovered();
     }
 
     /**
@@ -95,5 +101,10 @@ public class SquaresAdapter extends BaseAdapter implements SquareView.Listener {
          * triggered when a mine is clicked
          */
         void onMineClicked();
+
+        /**
+         * triggered when a square is discovered
+         */
+        void onSquareDiscovered();
     }
 }

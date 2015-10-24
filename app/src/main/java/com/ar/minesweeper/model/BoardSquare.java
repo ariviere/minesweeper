@@ -10,6 +10,7 @@ public class BoardSquare {
     private int mAdjacentMines = 0;
     private boolean mIsOpened = false;
     private boolean mIsFailedSquare = false;
+    private boolean mIsFlagged = false;
     private int positionY;
     private int positionX;
 
@@ -111,5 +112,21 @@ public class BoardSquare {
      */
     public void setPositionX(int positionX) {
         this.positionX = positionX;
+    }
+
+    /**
+     * to know if the square is flagged (user think there is a mine)
+     * @return true if the square is flagged
+     */
+    public boolean isFlagged() {
+        return mIsFlagged;
+    }
+
+    /**
+     * set square to be flagged
+     * @param isFlagged if the user thinks there is a mine
+     */
+    public void setIsFlagged(boolean isFlagged) {
+        mIsFlagged = isFlagged;
     }
 }

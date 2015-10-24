@@ -9,7 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ar.minesweeper.R;
+import com.ar.minesweeper.model.Board;
 import com.ar.minesweeper.model.BoardSquare;
+
+import java.util.HashMap;
 
 /**
  * Created by ariviere on 22/10/15.
@@ -27,6 +30,7 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
 
     /**
      * constructor
+     *
      * @param context context
      */
     public SquareView(Context context) {
@@ -39,8 +43,9 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
 
     /**
      * constructor
+     *
      * @param context context
-     * @param attrs attrs
+     * @param attrs   attrs
      */
     public SquareView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -52,8 +57,9 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
 
     /**
      * constructor
-     * @param context context
-     * @param attrs attrs
+     *
+     * @param context      context
+     * @param attrs        attrs
      * @param defStyleAttr defStyleAttr
      */
     public SquareView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -72,12 +78,16 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
         if (mSquare.hasMine()) {
             mSquare.setIsFailedSquare(true);
         }
+
+        mListener.onSquareDiscovered();
     }
 
     @Override
     public boolean onLongClick(View view) {
-        setBackgroundResource(R.color.background_material_light);
-        showFlagImage();
+        if (!mSquare.isOpened()) {
+            mSquare.setIsFlagged(!mSquare.isFlagged());
+            showFlagImage();
+        }
         return false;
     }
 
@@ -86,11 +96,20 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
      *
      * @param square current square of the board
      */
-    public void setModel(BoardSquare square) {
+    public void setModel(BoardSquare square, int gameStatus) {
         mSquare = square;
 
         if (mSquare.isOpened()) {
             openSquare();
+        }
+
+        if (mSquare.isFlagged()) {
+            showFlagImage();
+        }
+
+        if (gameStatus == Board.GAME_RUNNING) {
+            setOnClickListener(this);
+            setOnLongClickListener(this);
         }
     }
 
@@ -110,8 +129,6 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
         mSquareText = (TextView) findViewById(R.id.square_text);
 
         setBackgroundResource(R.drawable.ripple_square_undiscovered);
-        setOnClickListener(this);
-        setOnLongClickListener(this);
     }
 
     private void showMinesCount() {
@@ -163,5 +180,10 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
          * Triggered when a square with 0 adjacent mine is clicked
          */
         void onZeroAdjacentClicked(BoardSquare square);
+
+        /**
+         * Triggered when a square is discovered
+         */
+        void onSquareDiscovered();
     }
 }

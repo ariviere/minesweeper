@@ -1,6 +1,7 @@
 package com.ar.minesweeper.model;
 
 import android.graphics.Point;
+import android.util.Log;
 
 import com.ar.minesweeper.GameConfiguration;
 
@@ -14,9 +15,32 @@ import java.util.Set;
  */
 public class Board {
 
+    /**
+     * static variable for game running
+     */
+    public static final int GAME_RUNNING = 1;
+
+    /**
+     * static variable for game won
+     */
+    public static final int GAME_WON = 2;
+
+    /**
+     * static variable for game lost
+     */
+    public static final int GAME_LOST = 3;
+
+    /**
+     * 1 = Game running
+     * 2 = Game won
+     * 3 = Game lost
+     */
+    private int mGameStatus = GAME_RUNNING;
+
     private BoardSquare[][] mBoardSquares;
     private int mBoardPixelsSize;
     private LinkedList<BoardSquare> mSquaresQueue;
+    private int mSquaresToDiscover;
 
     /**
      * constructor
@@ -43,6 +67,9 @@ public class Board {
                 }
             }
         }
+
+        mSquaresToDiscover = GameConfiguration.BOARD_SIZE * GameConfiguration.BOARD_SIZE
+                - GameConfiguration.MINES_NUMBER;
     }
 
     /**
@@ -88,6 +115,38 @@ public class Board {
      */
     public int getSquarePixelsSize() {
         return mBoardPixelsSize / GameConfiguration.BOARD_SIZE;
+    }
+
+    /**
+     * get status of the game
+     * @return status of the game (documentation at var)
+     */
+    public int getGameStatus() {
+        return mGameStatus;
+    }
+
+    /**
+     * set status of the game
+     * @param gameStatus status of the game
+     */
+    public void setGameStatus(int gameStatus) {
+        mGameStatus = gameStatus;
+    }
+
+    /**
+     * get the number of squares to discover
+     * @return the number of squares to discover
+     */
+    public int getSquaresToDiscover() {
+        return mSquaresToDiscover;
+    }
+
+    /**
+     * remove one the mSquaresToDiscover
+     */
+    public void decrementSquaresToDiscover() {
+        mSquaresToDiscover--;
+        Log.d("Squares to discover", String.valueOf(mSquaresToDiscover));
     }
 
     /**
@@ -168,12 +227,21 @@ public class Board {
 
     /**
      * to uncover all the mines (when losing the game)
+     *
+     * @param showFlag show flag or show mine (game won or game lost)
      */
-    public void uncoverMines() {
+    public void uncoverMines(boolean showFlag) {
         for (int i = 0; i < GameConfiguration.BOARD_SIZE; i++) {
             for (int j = 0; j < GameConfiguration.BOARD_SIZE; j++) {
+
                 if (mBoardSquares[i][j].hasMine()) {
-                    mBoardSquares[i][j].setIsOpened(true);
+                    if (showFlag) {
+                        mBoardSquares[i][j].setIsFlagged(true);
+                        mBoardSquares[i][j].setIsOpened(false);
+                    } else {
+                        mBoardSquares[i][j].setIsOpened(true);
+                        mBoardSquares[i][j].setIsFlagged(false);
+                    }
                 }
             }
         }
@@ -226,6 +294,8 @@ public class Board {
 
     private void processUncoverSquare(BoardSquare square) {
         if (!square.isOpened()) {
+            mSquaresToDiscover--;
+            square.setIsFlagged(false);
             square.setIsOpened(true);
             if (square.getAdjacentMines() == 0) {
                 mSquaresQueue.addLast(square);
