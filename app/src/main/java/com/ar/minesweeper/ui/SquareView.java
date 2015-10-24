@@ -22,6 +22,7 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
     private TextView mSquareText;
 
     private BoardSquare mSquare;
+
     private Listener mListener;
 
     /**
@@ -65,8 +66,8 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
 
     @Override
     public void onClick(View view) {
-        mSquare.setIsUncovered(true);
-        uncoverSquare();
+        mSquare.setIsOpened(true);
+        openSquare();
 
         if (mSquare.hasMine()) {
             mSquare.setIsFailedSquare(true);
@@ -88,8 +89,8 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
     public void setModel(BoardSquare square) {
         mSquare = square;
 
-        if (mSquare.isUncovered()) {
-            uncoverSquare();
+        if (mSquare.isOpened()) {
+            openSquare();
         }
     }
 
@@ -131,7 +132,7 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
         mSquareText.setVisibility(View.GONE);
     }
 
-    private void uncoverSquare() {
+    private void openSquare() {
         if (!mSquare.hasFailedSquare()) {
             setBackgroundResource(R.color.background_material_light);
         } else {
@@ -144,6 +145,8 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
             mListener.onMineClicked();
         } else if (mSquare.getAdjacentMines() > 0) {
             showMinesCount();
+        } else {
+            mListener.onZeroAdjacentClicked(mSquare);
         }
     }
 
@@ -155,5 +158,10 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
          * Triggered when a user click on a mine
          */
         void onMineClicked();
+
+        /**
+         * Triggered when a square with 0 adjacent mine is clicked
+         */
+        void onZeroAdjacentClicked(BoardSquare square);
     }
 }

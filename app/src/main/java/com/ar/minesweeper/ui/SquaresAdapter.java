@@ -8,6 +8,7 @@ import android.widget.GridView;
 
 import com.ar.minesweeper.model.Board;
 import com.ar.minesweeper.GameConfiguration;
+import com.ar.minesweeper.model.BoardSquare;
 
 /**
  * Created by ariviere on 22/10/15.
@@ -47,20 +48,21 @@ public class SquaresAdapter extends BaseAdapter implements SquareView.Listener {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         SquareView squareView;
+
+        int squareY = i / GameConfiguration.BOARD_SIZE;
+        int squareX = i % GameConfiguration.BOARD_SIZE;
+
         if (view == null) {
             squareView = new SquareView(mContext);
             squareView.setLayoutParams(new GridView.LayoutParams(
                     mBoard.getSquarePixelsSize(), mBoard.getSquarePixelsSize()));
             squareView.setPadding(0, 0, 0, 0);
-            squareView.setModel(mBoard.getBoardSquares()
-                    [i / GameConfiguration.BOARD_SIZE]
-                    [i % GameConfiguration.BOARD_SIZE]);
+
+            squareView.setModel(mBoard.getBoardSquares()[squareY][squareX]);
             squareView.setListener(this);
         } else {
             squareView = (SquareView) view;
-            squareView.setModel(mBoard.getBoardSquares()
-                    [i / GameConfiguration.BOARD_SIZE]
-                    [i % GameConfiguration.BOARD_SIZE]);
+            squareView.setModel(mBoard.getBoardSquares()[squareY][squareX]);
         }
 
         return squareView;
@@ -71,6 +73,11 @@ public class SquaresAdapter extends BaseAdapter implements SquareView.Listener {
         mListener.onMineClicked();
     }
 
+    @Override
+    public void onZeroAdjacentClicked(BoardSquare square) {
+        mBoard.uncoverAdjacentZero(square);
+        notifyDataSetChanged();
+    }
 
     /**
      * set listener to the adapter

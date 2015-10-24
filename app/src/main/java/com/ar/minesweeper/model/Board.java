@@ -5,6 +5,7 @@ import android.graphics.Point;
 import com.ar.minesweeper.GameConfiguration;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 /**
@@ -15,6 +16,7 @@ public class Board {
 
     private BoardSquare[][] mBoardSquares;
     private int mBoardPixelsSize;
+    private LinkedList<BoardSquare> mSquaresQueue;
 
     /**
      * constructor
@@ -32,7 +34,7 @@ public class Board {
             }
             for (int j = 0; j < GameConfiguration.BOARD_SIZE; j++) {
                 if (mBoardSquares[i][j] == null) {
-                    mBoardSquares[i][j] = new BoardSquare();
+                    mBoardSquares[i][j] = new BoardSquare(i, j);
                 }
 
                 if (minesPosition.contains(new Point(i, j))) {
@@ -133,20 +135,20 @@ public class Board {
             }
 
             if (mBoardSquares[i + 1][j] == null) {
-                mBoardSquares[i + 1][j] = new BoardSquare();
+                mBoardSquares[i + 1][j] = new BoardSquare(i + 1, j);
             }
             mBoardSquares[i + 1][j].addAdjacentMine();
 
             if (j - 1 >= 0) {
                 if (mBoardSquares[i + 1][j - 1] == null) {
-                    mBoardSquares[i + 1][j - 1] = new BoardSquare();
+                    mBoardSquares[i + 1][j - 1] = new BoardSquare(i + 1, j - 1);
                 }
                 mBoardSquares[i + 1][j - 1].addAdjacentMine();
             }
 
             if (j + 1 < GameConfiguration.BOARD_SIZE) {
                 if (mBoardSquares[i + 1][j + 1] == null) {
-                    mBoardSquares[i + 1][j + 1] = new BoardSquare();
+                    mBoardSquares[i + 1][j + 1] = new BoardSquare(i + 1, j + 1);
                 }
                 mBoardSquares[i + 1][j + 1].addAdjacentMine();
             }
@@ -158,7 +160,7 @@ public class Board {
 
         if (j + 1 < GameConfiguration.BOARD_SIZE) {
             if (mBoardSquares[i][j + 1] == null) {
-                mBoardSquares[i][j + 1] = new BoardSquare();
+                mBoardSquares[i][j + 1] = new BoardSquare(i, j + 1);
             }
             mBoardSquares[i][j + 1].addAdjacentMine();
         }
@@ -171,8 +173,62 @@ public class Board {
         for (int i = 0; i < GameConfiguration.BOARD_SIZE; i++) {
             for (int j = 0; j < GameConfiguration.BOARD_SIZE; j++) {
                 if (mBoardSquares[i][j].hasMine()) {
-                    mBoardSquares[i][j].setIsUncovered(true);
+                    mBoardSquares[i][j].setIsOpened(true);
                 }
+            }
+        }
+    }
+
+    public void uncoverAdjacentZero(BoardSquare square) {
+        mSquaresQueue = new LinkedList<>();
+        mSquaresQueue.add(mBoardSquares[square.getY()][square.getX()]);
+        while (!mSquaresQueue.isEmpty()) {
+
+            BoardSquare queuedSquare = mSquaresQueue.getFirst();
+            if (queuedSquare.getY() - 1 >= 0) {
+                processUncoverSquare(mBoardSquares[queuedSquare.getY() - 1][queuedSquare.getX()]);
+
+                if (queuedSquare.getX() - 1 >= 0) {
+                    processUncoverSquare(mBoardSquares[queuedSquare.getY() - 1][queuedSquare.getX() - 1]);
+                }
+
+                if (queuedSquare.getX() + 1 < GameConfiguration.BOARD_SIZE) {
+                    processUncoverSquare(mBoardSquares[queuedSquare.getY() - 1][queuedSquare.getX() + 1]);
+                }
+            }
+
+            if (queuedSquare.getY() + 1 < GameConfiguration.BOARD_SIZE) {
+                processUncoverSquare(mBoardSquares[queuedSquare.getY() + 1][queuedSquare.getX()]);
+
+                if (queuedSquare.getX() - 1 >= 0) {
+                    processUncoverSquare(mBoardSquares[queuedSquare.getY() + 1][queuedSquare.getX() - 1]);
+                }
+
+                if (queuedSquare.getX() + 1 < GameConfiguration.BOARD_SIZE) {
+                    processUncoverSquare(mBoardSquares[queuedSquare.getY() + 1][queuedSquare.getX() + 1]);
+                }
+            }
+
+            if (queuedSquare.getX() - 1 >= 0) {
+                processUncoverSquare(mBoardSquares[queuedSquare.getY()][queuedSquare.getX() - 1]);
+            }
+
+            if (queuedSquare.getX() + 1 < GameConfiguration.BOARD_SIZE) {
+                processUncoverSquare(mBoardSquares[queuedSquare.getY()][queuedSquare.getX() + 1]);
+            }
+
+
+            mSquaresQueue.removeFirst();
+        }
+
+        mSquaresQueue = null;
+    }
+
+    private void processUncoverSquare(BoardSquare square) {
+        if (!square.isOpened()) {
+            square.setIsOpened(true);
+            if (square.getAdjacentMines() == 0) {
+                mSquaresQueue.addLast(square);
             }
         }
     }

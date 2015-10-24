@@ -8,8 +8,15 @@ public class BoardSquare {
 
     private boolean mHasMine;
     private int mAdjacentMines = 0;
-    private boolean mIsUncovered;
+    private boolean mIsOpened = false;
     private boolean mIsFailedSquare = false;
+    private int positionY;
+    private int positionX;
+
+    public BoardSquare(int positionY, int positionX) {
+        this.positionY = positionY;
+        this.positionX = positionX;
+    }
 
     /**
      * determine if a square has a mine
@@ -46,16 +53,16 @@ public class BoardSquare {
      * the square has been clicked
      * @return true if the square has been discovered
      */
-    public boolean isUncovered() {
-        return mIsUncovered;
+    public boolean isOpened() {
+        return mIsOpened;
     }
 
     /**
      * the square has been clicked
      * @param isUncovered has the square been discovered
      */
-    public void setIsUncovered(boolean isUncovered) {
-        mIsUncovered = isUncovered;
+    public void setIsOpened(boolean isUncovered) {
+        mIsOpened = isUncovered;
     }
 
     /**
@@ -72,5 +79,37 @@ public class BoardSquare {
      */
     public void setIsFailedSquare(boolean isFailedSquare) {
         mIsFailedSquare = isFailedSquare;
+    }
+
+    /**
+     * get position y on the board
+     * @return position y on the board
+     */
+    public int getY() {
+        return positionY;
+    }
+
+    /**
+     * set position y on the board
+     * @param positionY on the board
+     */
+    public void setPositionY(int positionY) {
+        this.positionY = positionY;
+    }
+
+    /**
+     * get position x on the board
+     * @return position x on the board
+     */
+    public int getX() {
+        return positionX;
+    }
+
+    /**
+     * set position x of the square on the board
+     * @param positionX of the square on the board
+     */
+    public void setPositionX(int positionX) {
+        this.positionX = positionX;
     }
 }
