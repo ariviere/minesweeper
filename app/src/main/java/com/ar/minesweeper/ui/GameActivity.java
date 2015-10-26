@@ -76,13 +76,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             mStatusImage.setImageResource(R.drawable.ic_sunglasses);
             mBoard.uncoverMines(Board.UNCOVER_WIN);
             mBoard.setGameStatus(Board.GAME_WON);
+            mSquaresAdapter.notifyDataSetChanged();
         }
     }
 
     @Override
     public void onShake() {
-        mBoard.uncoverMines(Board.UNCOVER_CHEAT);
-        mSquaresAdapter.notifyDataSetChanged();
+        if (mBoard.getGameStatus() == Board.GAME_RUNNING) {
+            mBoard.uncoverMines(Board.UNCOVER_CHEAT);
+            mSquaresAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
