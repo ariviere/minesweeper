@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 
-import com.ar.minesweeper.model.Board;
 import com.ar.minesweeper.GameConfiguration;
+import com.ar.minesweeper.model.Board;
 import com.ar.minesweeper.model.BoardSquare;
 
 /**
@@ -22,8 +22,9 @@ public class SquaresAdapter extends BaseAdapter implements SquareView.Listener {
 
     /**
      * constructor
+     *
      * @param context context of the app
-     * @param board board with squares
+     * @param board   board with squares
      */
     public SquaresAdapter(Context context, Board board) {
         mContext = context;
@@ -52,18 +53,14 @@ public class SquaresAdapter extends BaseAdapter implements SquareView.Listener {
         int squareY = i / GameConfiguration.BOARD_SIZE;
         int squareX = i % GameConfiguration.BOARD_SIZE;
 
-        if (view == null) {
-            squareView = new SquareView(mContext);
-            squareView.setLayoutParams(new GridView.LayoutParams(
-                    mBoard.getSquarePixelsSize(), mBoard.getSquarePixelsSize()));
-            squareView.setPadding(0, 0, 0, 0);
+        squareView = new SquareView(mContext);
+        squareView.setListener(this);
 
-            squareView.setModel(mBoard.getBoardSquares()[squareY][squareX], mBoard.getGameStatus());
-            squareView.setListener(this);
-        } else {
-            squareView = (SquareView) view;
-            squareView.setModel(mBoard.getBoardSquares()[squareY][squareX], mBoard.getGameStatus());
-        }
+        squareView.setLayoutParams(new GridView.LayoutParams(
+                mBoard.getSquarePixelsSize(), mBoard.getSquarePixelsSize()));
+        squareView.setPadding(0, 0, 0, 0);
+
+        squareView.setModel(mBoard.getBoardSquares()[squareY][squareX], mBoard.getGameStatus());
 
         return squareView;
     }
@@ -87,6 +84,7 @@ public class SquaresAdapter extends BaseAdapter implements SquareView.Listener {
 
     /**
      * set listener to the adapter
+     *
      * @param listener listener from game activity
      */
     public void setListener(Listener listener) {

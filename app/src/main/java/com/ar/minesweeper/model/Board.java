@@ -31,6 +31,21 @@ public class Board {
     public static final int GAME_LOST = 3;
 
     /**
+     * static variable to uncover mines in case of lose
+     */
+    public static final int UNCOVER_LOSE = 1;
+
+    /**
+     * static variable to uncover mines in case of win
+     */
+    public static final int UNCOVER_WIN = 2;
+
+    /**
+     * static variable to uncover mines in case of cheat
+     */
+    public static final int UNCOVER_CHEAT = 3;
+
+    /**
      * 1 = Game running
      * 2 = Game won
      * 3 = Game lost
@@ -41,6 +56,7 @@ public class Board {
     private int mBoardPixelsSize;
     private LinkedList<BoardSquare> mSquaresQueue;
     private int mSquaresToDiscover;
+    private boolean mCheatActivated = false;
 
     /**
      * constructor
@@ -226,27 +242,40 @@ public class Board {
     }
 
     /**
-     * to uncover all the mines (when losing the game)
+     * to uncover all the mines
      *
-     * @param showFlag show flag or show mine (game won or game lost)
+     * @param uncoverMode either Board.UNCOVER_WIN, Board.UNCOVER.LOSE, Board.UNCOVER_CHEAT
      */
-    public void uncoverMines(boolean showFlag) {
+    public void uncoverMines(int uncoverMode) {
         for (int i = 0; i < GameConfiguration.BOARD_SIZE; i++) {
             for (int j = 0; j < GameConfiguration.BOARD_SIZE; j++) {
 
                 if (mBoardSquares[i][j].hasMine()) {
-                    if (showFlag) {
+                    if (uncoverMode == UNCOVER_WIN) {
                         mBoardSquares[i][j].setIsFlagged(true);
-                        mBoardSquares[i][j].setIsOpened(false);
-                    } else {
+                    } else if (uncoverMode == UNCOVER_LOSE) {
                         mBoardSquares[i][j].setIsOpened(true);
                         mBoardSquares[i][j].setIsFlagged(false);
+                    } else if (uncoverMode == UNCOVER_CHEAT) {
+                        if (mCheatActivated) {
+                            mBoardSquares[i][j].setIsOpened(true);
+                        } else {
+                            mBoardSquares[i][j].setIsOpened(false);
+                        }
                     }
                 }
             }
         }
+
+        if (uncoverMode == UNCOVER_CHEAT) {
+            mCheatActivated = !mCheatActivated;
+        }
     }
 
+    /**
+     * discover squares adjacent to 0 and do the same if a square with 0 adjacent is discovered
+     * @param square square opened
+     */
     public void uncoverAdjacentZero(BoardSquare square) {
         mSquaresQueue = new LinkedList<>();
         mSquaresQueue.add(mBoardSquares[square.getY()][square.getX()]);

@@ -1,5 +1,8 @@
 package com.ar.minesweeper.ui;
 
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -11,6 +14,7 @@ import android.widget.ImageView;
 
 import com.ar.minesweeper.GameConfiguration;
 import com.ar.minesweeper.R;
+import com.ar.minesweeper.hardware.ShakingDetector;
 import com.ar.minesweeper.model.Board;
 
 /**
@@ -18,12 +22,16 @@ import com.ar.minesweeper.model.Board;
  * and where you can play the game
  */
 public class GameActivity extends AppCompatActivity implements View.OnClickListener,
-    SquaresAdapter.Listener {
+        SquaresAdapter.Listener, ShakingDetector.OnShakeListener {
 
     private Board mBoard;
     private GridView mBoardView;
     private SquaresAdapter mSquaresAdapter;
     private ImageView mStatusImage;
+
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometer;
+    private ShakingDetector mShakingDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +45,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         setBoardSize();
 
         initBoardUI();
+
+        /**
+         * init shake to cheat
+         */
+        initShakingDetector();
     }
 
     @Override
@@ -52,7 +65,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onMineClicked() {
         mBoard.setGameStatus(Board.GAME_LOST);
-        mBoard.uncoverMines(false);
+        mBoard.uncoverMines(Board.UNCOVER_LOSE);
         mSquaresAdapter.notifyDataSetChanged();
         mStatusImage.setImageResource(R.drawable.ic_sad);
     }
@@ -61,9 +74,27 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public void onSquareDiscovered() {
         if (mBoard.getSquaresToDiscover() == 0) {
             mStatusImage.setImageResource(R.drawable.ic_sunglasses);
-            mBoard.uncoverMines(true);
+            mBoard.uncoverMines(Board.UNCOVER_WIN);
             mBoard.setGameStatus(Board.GAME_WON);
         }
+    }
+
+    @Override
+    public void onShake() {
+        mBoard.uncoverMines(Board.UNCOVER_CHEAT);
+        mSquaresAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(mShakingDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSensorManager.unregisterListener(mShakingDetector);
     }
 
     /**
@@ -113,5 +144,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mSquaresAdapter = new SquaresAdapter(this, mBoard);
         mSquaresAdapter.setListener(this);
         mBoardView.setAdapter(mSquaresAdapter);
+    }
+
+    private void initShakingDetector() {
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mAccelerometer = mSensorManager
+                .getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        mShakingDetector = new ShakingDetector();
+        mShakingDetector.setOnShakeListener(this);
     }
 }

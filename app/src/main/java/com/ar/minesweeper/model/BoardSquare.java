@@ -11,12 +11,17 @@ public class BoardSquare {
     private boolean mIsOpened = false;
     private boolean mIsFailedSquare = false;
     private boolean mIsFlagged = false;
-    private int positionY;
-    private int positionX;
+    private int mPositionY;
+    private int mPositionX;
 
+    /**
+     * constructor
+     * @param positionY on the board
+     * @param positionX on the board
+     */
     public BoardSquare(int positionY, int positionX) {
-        this.positionY = positionY;
-        this.positionX = positionX;
+        this.mPositionY = positionY;
+        this.mPositionX = positionX;
     }
 
     /**
@@ -87,7 +92,7 @@ public class BoardSquare {
      * @return position y on the board
      */
     public int getY() {
-        return positionY;
+        return mPositionY;
     }
 
     /**
@@ -95,7 +100,7 @@ public class BoardSquare {
      * @param positionY on the board
      */
     public void setPositionY(int positionY) {
-        this.positionY = positionY;
+        this.mPositionY = positionY;
     }
 
     /**
@@ -103,7 +108,7 @@ public class BoardSquare {
      * @return position x on the board
      */
     public int getX() {
-        return positionX;
+        return mPositionX;
     }
 
     /**
@@ -111,7 +116,7 @@ public class BoardSquare {
      * @param positionX of the square on the board
      */
     public void setPositionX(int positionX) {
-        this.positionX = positionX;
+        this.mPositionX = positionX;
     }
 
     /**

@@ -12,8 +12,6 @@ import com.ar.minesweeper.R;
 import com.ar.minesweeper.model.Board;
 import com.ar.minesweeper.model.BoardSquare;
 
-import java.util.HashMap;
-
 /**
  * Created by ariviere on 22/10/15.
  * Display a board square on the screen
@@ -72,14 +70,22 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
 
     @Override
     public void onClick(View view) {
-        mSquare.setIsOpened(true);
-        openSquare();
+        if (!mSquare.isOpened()) {
+            mSquare.setIsOpened(true);
+            mSquare.setIsFlagged(false);
 
-        if (mSquare.hasMine()) {
-            mSquare.setIsFailedSquare(true);
+
+            if (mSquare.hasMine()) {
+                mSquare.setIsFailedSquare(true);
+                mListener.onMineClicked();
+            } else if (mSquare.getAdjacentMines() == 0) {
+                mListener.onZeroAdjacentClicked(mSquare);
+            }
+
+            openSquare();
+
+            mListener.onSquareDiscovered();
         }
-
-        mListener.onSquareDiscovered();
     }
 
     @Override
@@ -94,7 +100,8 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
     /**
      * set model of the square view
      *
-     * @param square current square of the board
+     * @param square     current square of the board
+     * @param gameStatus status of the game
      */
     public void setModel(BoardSquare square, int gameStatus) {
         mSquare = square;
@@ -110,6 +117,9 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
         if (gameStatus == Board.GAME_RUNNING) {
             setOnClickListener(this);
             setOnLongClickListener(this);
+        } else {
+            setOnClickListener(null);
+            setOnLongClickListener(null);
         }
     }
 
@@ -144,9 +154,13 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
     }
 
     private void showFlagImage() {
-        mSquareImage.setImageResource(R.drawable.ic_flag);
-        mSquareImage.setVisibility(View.VISIBLE);
-        mSquareText.setVisibility(View.GONE);
+        if (mSquare.isFlagged()) {
+            mSquareImage.setImageResource(R.drawable.ic_flag);
+            mSquareImage.setVisibility(View.VISIBLE);
+            mSquareText.setVisibility(View.GONE);
+        } else {
+            mSquareImage.setVisibility(View.GONE);
+        }
     }
 
     private void openSquare() {
@@ -158,12 +172,8 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
 
         if (mSquare.hasMine()) {
             showMineImage();
-
-            mListener.onMineClicked();
         } else if (mSquare.getAdjacentMines() > 0) {
             showMinesCount();
-        } else {
-            mListener.onZeroAdjacentClicked(mSquare);
         }
     }
 
@@ -178,6 +188,8 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
 
         /**
          * Triggered when a square with 0 adjacent mine is clicked
+         *
+         * @param square square to check
          */
         void onZeroAdjacentClicked(BoardSquare square);
 
