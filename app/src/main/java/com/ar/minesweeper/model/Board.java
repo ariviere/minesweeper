@@ -1,7 +1,6 @@
 package com.ar.minesweeper.model;
 
 import android.graphics.Point;
-import android.util.Log;
 
 import com.ar.minesweeper.GameConfiguration;
 
@@ -135,6 +134,7 @@ public class Board {
 
     /**
      * get status of the game
+     *
      * @return status of the game (documentation at var)
      */
     public int getGameStatus() {
@@ -143,6 +143,7 @@ public class Board {
 
     /**
      * set status of the game
+     *
      * @param gameStatus status of the game
      */
     public void setGameStatus(int gameStatus) {
@@ -151,6 +152,7 @@ public class Board {
 
     /**
      * get the number of squares to discover
+     *
      * @return the number of squares to discover
      */
     public int getSquaresToDiscover() {
@@ -162,7 +164,6 @@ public class Board {
      */
     public void decrementSquaresToDiscover() {
         mSquaresToDiscover--;
-        Log.d("Squares to discover", String.valueOf(mSquaresToDiscover));
     }
 
     /**
@@ -274,6 +275,7 @@ public class Board {
 
     /**
      * discover squares adjacent to 0 and do the same if a square with 0 adjacent is discovered
+     *
      * @param square square opened
      */
     public void uncoverAdjacentZero(BoardSquare square) {

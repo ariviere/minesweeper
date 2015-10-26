@@ -1,16 +1,17 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
     android:id="@+id/container_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/board_margin">
+    android:background="@color/game_background">
 
     <ImageView
         android:id="@+id/status_button"
         android:layout_width="64dp"
         android:layout_height="64dp"
+        android:layout_gravity="center_horizontal"
         android:padding="@dimen/status_image_padding"
         android:src="@drawable/ic_happy"
-        android:layout_gravity="center_horizontal"
         />
 
     <GridView
@@ -19,6 +20,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:horizontalSpacing="0dp"
-        android:verticalSpacing="0dp" />
+        android:verticalSpacing="0dp"/>
 
 </FrameLayout>

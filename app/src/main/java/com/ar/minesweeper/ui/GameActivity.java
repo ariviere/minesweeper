@@ -118,15 +118,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
      * set the board size according to the height and the width of the device
      */
     private void setBoardSize() {
-        int boardMargin = getResources().getDimensionPixelSize(R.dimen.board_margin);
-
         DisplayMetrics screenSize = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(screenSize);
 
         if (screenSize.heightPixels > screenSize.widthPixels) {
-            mBoard.setBoardPixelsSize(screenSize.widthPixels - 2 * boardMargin);
+            mBoard.setBoardPixelsSize(screenSize.widthPixels - 2);
         } else {
-            mBoard.setBoardPixelsSize(screenSize.heightPixels - 2 * boardMargin);
+            mBoard.setBoardPixelsSize(screenSize.heightPixels - 2);
         }
     }
 

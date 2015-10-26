@@ -19,6 +19,7 @@ import com.ar.minesweeper.model.BoardSquare;
 public class SquareView extends FrameLayout implements View.OnClickListener,
         View.OnLongClickListener {
 
+    private View mSquareContainer;
     private ImageView mSquareImage;
     private TextView mSquareText;
 
@@ -135,16 +136,37 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
     private void init(Context context) {
         LayoutInflater.from(context).inflate(R.layout.item_square, this);
 
+        mSquareContainer = findViewById(R.id.square_container);
         mSquareImage = (ImageView) findViewById(R.id.square_image);
         mSquareText = (TextView) findViewById(R.id.square_text);
 
-        setBackgroundResource(R.drawable.ripple_square_undiscovered);
+        setBackgroundResource(R.color.game_background);
+        mSquareContainer.setBackgroundResource(R.drawable.ripple_square_undiscovered);
     }
 
     private void showMinesCount() {
+        mSquareText.setText(String.valueOf(mSquare.getAdjacentMines()));
+        setMinesCountColor();
+
         mSquareImage.setVisibility(View.GONE);
         mSquareText.setVisibility(View.VISIBLE);
-        mSquareText.setText(String.valueOf(mSquare.getAdjacentMines()));
+    }
+
+    private void setMinesCountColor() {
+        switch (mSquare.getAdjacentMines()) {
+            case 1:
+                mSquareText.setTextColor(getResources().getColor(R.color.adjacent_1));
+                break;
+            case 2:
+                mSquareText.setTextColor(getResources().getColor(R.color.adjacent_2));
+                break;
+            case 3:
+                mSquareText.setTextColor(getResources().getColor(R.color.adjacent_3));
+                break;
+            default:
+                mSquareText.setTextColor(getResources().getColor(R.color.adjacent_more));
+                break;
+        }
     }
 
     private void showMineImage() {
@@ -165,9 +187,9 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
 
     private void openSquare() {
         if (!mSquare.hasFailedSquare()) {
-            setBackgroundResource(R.color.background_material_light);
+            mSquareContainer.setBackgroundResource(R.color.discovered_square);
         } else {
-            setBackgroundResource(R.color.light_red);
+            mSquareContainer.setBackgroundResource(R.color.light_red);
         }
 
         if (mSquare.hasMine()) {
