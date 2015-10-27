@@ -20,6 +20,7 @@
         android:id="@+id/board_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingTop="@dimen/default_margin"
         android:horizontalSpacing="0dp"
         android:verticalSpacing="0dp"/>
 
