@@ -11,5 +11,8 @@
     <string name="columns">Columns</string>
     <string name="mines">Mines</string>
     <string name="settings_ok">OK</string>
-    <string name="settings_incorrect">Informations incorrect</string>
+    <string name="settings_error_fill_all">Fill all the custom informations to validate</string>
+    <string name="settings_error_too_many_mines">There are too many mines for the board</string>
+    <string name="settings_error_columns_number">Columns must be between 4 and 16</string>
+    <string name="settings_error_rows_number">Rows number must be between 4 and 40</string>
 </resources>

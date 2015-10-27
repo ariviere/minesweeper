@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
 import com.ar.minesweeper.R;
 
@@ -28,6 +29,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private RadioButton mExpertButton;
     private RadioButton mCustomButton;
     private View mCustomContainer;
+    private TextView mErrorMessage;
 
     private EditText mRowsInput;
     private EditText mColumnsInput;
@@ -76,6 +78,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         mExpertButton = (RadioButton) findViewById(R.id.expert_button);
         mCustomButton = (RadioButton) findViewById(R.id.custom_button);
         mCustomContainer = findViewById(R.id.custom_container);
+        mErrorMessage = (TextView) findViewById(R.id.error_message);
 
         mRowsInput = (EditText) findViewById(R.id.rows_input);
         mColumnsInput = (EditText) findViewById(R.id.columns_input);
@@ -124,13 +127,28 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     if (TextUtils.isEmpty(mColumnsInput.getText().toString())
                             || TextUtils.isEmpty(mRowsInput.getText().toString())
                             || TextUtils.isEmpty(mMinesInput.getText().toString())) {
-                        mCustomContainer.setVisibility(View.VISIBLE);
+                        mErrorMessage.setVisibility(View.VISIBLE);
+                        mErrorMessage.setText(getResources().getString(R.string.settings_error_fill_all));
                         return true;
                     }
 
                     int customColumns = Integer.valueOf(mColumnsInput.getText().toString());
                     int customRows = Integer.valueOf(mRowsInput.getText().toString());
                     int customMines = Integer.valueOf(mMinesInput.getText().toString());
+
+                    if (customColumns > 16 || customColumns < 4) {
+                        mErrorMessage.setVisibility(View.VISIBLE);
+                        mErrorMessage.setText(getResources().getString(R.string.settings_error_columns_number));
+                        return true;
+                    } else if (customRows > 40 || customRows < 4) {
+                        mErrorMessage.setVisibility(View.VISIBLE);
+                        mErrorMessage.setText(getResources().getString(R.string.settings_error_rows_number));
+                        return true;
+                    } else if (customMines > customColumns * customRows) {
+                        mErrorMessage.setVisibility(View.VISIBLE);
+                        mErrorMessage.setText(getResources().getString(R.string.settings_error_too_many_mines));
+                        return true;
+                    }
 
                     GameConfiguration.setBoardColumnsNumber(this, customColumns);
                     GameConfiguration.setBoardRowsNumber(this, customRows);
