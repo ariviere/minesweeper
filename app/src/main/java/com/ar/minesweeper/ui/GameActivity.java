@@ -1,21 +1,28 @@
 package com.ar.minesweeper.ui;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
-import com.ar.minesweeper.GameConfiguration;
 import com.ar.minesweeper.R;
-import com.ar.minesweeper.hardware.ShakingDetector;
 import com.ar.minesweeper.model.Board;
+import com.ar.minesweeper.sensor.ShakingDetector;
+import com.ar.minesweeper.settings.GameConfiguration;
+import com.ar.minesweeper.settings.SettingsActivity;
 
 /**
  * Game activity where the board is shown
@@ -25,7 +32,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         SquaresAdapter.Listener, ShakingDetector.OnShakeListener {
 
     private Board mBoard;
-    private GridView mBoardView;
     private SquaresAdapter mSquaresAdapter;
     private ImageView mStatusImage;
 
@@ -38,13 +44,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        initGame();
+
         initStatusImage();
-
-        initBoardModel();
-
-        setBoardSize();
-
-        initBoardUI();
 
         /**
          * init shake to cheat
@@ -55,10 +57,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.status_button) {
+            mBoard.setGameStatus(Board.GAME_RUNNING);
             mStatusImage.setImageResource(R.drawable.ic_happy);
-            initBoardModel();
-            setBoardSize();
-            initBoardUI();
+            mBoard.resetSquares();
+            mSquaresAdapter.notifyDataSetChanged();
         }
     }
 
@@ -100,6 +102,41 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mSensorManager.unregisterListener(mShakingDetector);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.game_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.settings:
+                Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                startActivityForResult(settingsIntent, SettingsActivity.ACTIVITY_CODE);
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && requestCode == SettingsActivity.ACTIVITY_CODE) {
+            if (mBoard.getColumnsNumber() != GameConfiguration.getBoardColumnsNumber(this)
+                    || mBoard.getRowsNumber() != GameConfiguration.getBoardRowsNumber(this)
+                    || mBoard.getMinesNumber() != GameConfiguration.getBoardMinesNumber(this)) {
+                initGame();
+            }
+        }
+    }
+
+    private void initGame() {
+        initBoardModel();
+        setBoardSize();
+        initBoardUI();
+    }
+
     /**
      * init the status image
      * click to start new game
@@ -114,7 +151,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
      * init the model of the board (random mines, etc)
      */
     private void initBoardModel() {
-        mBoard = new Board();
+        mBoard = new Board(GameConfiguration.getBoardRowsNumber(this),
+                GameConfiguration.getBoardColumnsNumber(this),
+                GameConfiguration.getBoardMinesNumber(this));
     }
 
     /**
@@ -124,27 +163,24 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         DisplayMetrics screenSize = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(screenSize);
 
-        if (screenSize.heightPixels > screenSize.widthPixels) {
-            mBoard.setBoardPixelsSize(screenSize.widthPixels - 2);
-        } else {
-            mBoard.setBoardPixelsSize(screenSize.heightPixels - 2);
-        }
+        mBoard.setBoardPixelsSize(screenSize.widthPixels);
     }
 
     /**
      * display the ui elements of the board
      */
     private void initBoardUI() {
-        mBoardView = (GridView) findViewById(R.id.board_view);
+        GridView boardView = (GridView) findViewById(R.id.board_view);
 
-        FrameLayout.LayoutParams boardLayoutParams = new FrameLayout.LayoutParams(
-                mBoard.getBoardPixelsSize(), mBoard.getBoardPixelsSize());
+        LinearLayout.LayoutParams boardLayoutParams = new LinearLayout.LayoutParams(
+                mBoard.getBoardPixelsSize(), ViewGroup.LayoutParams.WRAP_CONTENT);
         boardLayoutParams.gravity = Gravity.CENTER;
-        mBoardView.setLayoutParams(boardLayoutParams);
-        mBoardView.setNumColumns(GameConfiguration.BOARD_SIZE);
+        boardView.setLayoutParams(boardLayoutParams);
+
+        boardView.setNumColumns(mBoard.getColumnsNumber());
         mSquaresAdapter = new SquaresAdapter(this, mBoard);
         mSquaresAdapter.setListener(this);
-        mBoardView.setAdapter(mSquaresAdapter);
+        boardView.setAdapter(mSquaresAdapter);
     }
 
     private void initShakingDetector() {

@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 
-import com.ar.minesweeper.GameConfiguration;
+import com.ar.minesweeper.settings.GameConfiguration;
 import com.ar.minesweeper.model.Board;
 import com.ar.minesweeper.model.BoardSquare;
 
@@ -33,7 +33,7 @@ public class SquaresAdapter extends BaseAdapter implements SquareView.Listener {
 
     @Override
     public int getCount() {
-        return GameConfiguration.BOARD_SIZE * GameConfiguration.BOARD_SIZE;
+        return mBoard.getColumnsNumber() * mBoard.getRowsNumber();
     }
 
     @Override
@@ -50,16 +50,20 @@ public class SquaresAdapter extends BaseAdapter implements SquareView.Listener {
     public View getView(int i, View view, ViewGroup viewGroup) {
         SquareView squareView;
 
-        int squareY = i / GameConfiguration.BOARD_SIZE;
-        int squareX = i % GameConfiguration.BOARD_SIZE;
+        int squareY = i / mBoard.getColumnsNumber();
+        int squareX = i % mBoard.getColumnsNumber();
 
-        squareView = new SquareView(mContext);
+        if (view == null) {
+            squareView = new SquareView(mContext);
+
+            squareView.setLayoutParams(new GridView.LayoutParams(
+                    mBoard.getSquarePixelsSize(), mBoard.getSquarePixelsSize()));
+            squareView.setPadding(0, 0, 0, 0);
+        } else {
+            squareView = (SquareView) view;
+        }
+
         squareView.setListener(this);
-
-        squareView.setLayoutParams(new GridView.LayoutParams(
-                mBoard.getSquarePixelsSize(), mBoard.getSquarePixelsSize()));
-        squareView.setPadding(0, 0, 0, 0);
-
         squareView.setModel(mBoard.getBoardSquares()[squareY][squareX], mBoard.getGameStatus());
 
         return squareView;

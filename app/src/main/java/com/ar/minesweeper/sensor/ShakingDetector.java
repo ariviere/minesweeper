@@ -1,4 +1,4 @@
-package com.ar.minesweeper.hardware;
+package com.ar.minesweeper.sensor;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;

@@ -1,12 +1,13 @@
 <resources>
     <color name="light_red">#e87474</color>
-    <color name="yellow">#FFCC3A</color>
+    <color name="orange">#e29720</color>
     <color name="light_black">#26282A</color>
     <color name="light_grey">#efefef</color>
-    <color name="blue">#006BB6</color>
+    <color name="blue">#235db9</color>
+    <color name="red">#992222</color>
 
     <color name="undiscovered_square">@color/blue</color>
-    <color name="discovered_square">@color/yellow</color>
+    <color name="discovered_square">@color/orange</color>
     <color name="game_background">@color/light_grey</color>
     <color name="mine_discovered_background">@color/light_red</color>
 

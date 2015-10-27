@@ -2,8 +2,6 @@ package com.ar.minesweeper.model;
 
 import android.graphics.Point;
 
-import com.ar.minesweeper.GameConfiguration;
-
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
@@ -57,21 +55,29 @@ public class Board {
     private int mSquaresToDiscover;
     private boolean mCheatActivated = false;
 
+    private int mRowsNumber;
+    private int mColumnsNumber;
+    private int mMinesNumber;
+
     /**
      * constructor
      */
-    public Board() {
+    public Board(int rows, int columns, int minesCount) {
+
+        mRowsNumber = rows;
+        mColumnsNumber = columns;
+        mMinesNumber = minesCount;
 
         // generate mines position
         Set<Point> minesPosition = generateMinesSet();
 
         //declare every square of the board
-        mBoardSquares = new BoardSquare[GameConfiguration.BOARD_SIZE][GameConfiguration.BOARD_SIZE];
-        for (int i = 0; i < GameConfiguration.BOARD_SIZE; i++) {
+        mBoardSquares = new BoardSquare[mRowsNumber][mColumnsNumber];
+        for (int i = 0; i < mRowsNumber; i++) {
             if (mBoardSquares[i] == null) {
-                mBoardSquares[i] = new BoardSquare[GameConfiguration.BOARD_SIZE];
+                mBoardSquares[i] = new BoardSquare[mColumnsNumber];
             }
-            for (int j = 0; j < GameConfiguration.BOARD_SIZE; j++) {
+            for (int j = 0; j < mColumnsNumber; j++) {
                 if (mBoardSquares[i][j] == null) {
                     mBoardSquares[i][j] = new BoardSquare(i, j);
                 }
@@ -83,8 +89,8 @@ public class Board {
             }
         }
 
-        mSquaresToDiscover = GameConfiguration.BOARD_SIZE * GameConfiguration.BOARD_SIZE
-                - GameConfiguration.MINES_NUMBER;
+        mSquaresToDiscover = mRowsNumber * mColumnsNumber
+                - mMinesNumber;
     }
 
     /**
@@ -129,7 +135,7 @@ public class Board {
      * @return the size of a square in pixels
      */
     public int getSquarePixelsSize() {
-        return mBoardPixelsSize / GameConfiguration.BOARD_SIZE;
+        return mBoardPixelsSize / mColumnsNumber;
     }
 
     /**
@@ -167,18 +173,72 @@ public class Board {
     }
 
     /**
+     * number of rows
+     *
+     * @return the number of rows
+     */
+    public int getRowsNumber() {
+        return mRowsNumber;
+    }
+
+    /**
+     * number of rows
+     *
+     * @param rowsNumber on the board
+     */
+    public void setRowsNumber(int rowsNumber) {
+        mRowsNumber = rowsNumber;
+    }
+
+    /**
+     * number of columns
+     *
+     * @return the number of columns
+     */
+    public int getColumnsNumber() {
+        return mColumnsNumber;
+    }
+
+    /**
+     * number of columns
+     *
+     * @param columnsNumber on the board
+     */
+    public void setColumnsNumber(int columnsNumber) {
+        mColumnsNumber = columnsNumber;
+    }
+
+    /**
+     * number of mines
+     *
+     * @return the number of mines
+     */
+    public int getMinesNumber() {
+        return mMinesNumber;
+    }
+
+    /**
+     * number of mines
+     *
+     * @param minesNumber on the board
+     */
+    public void setMinesNumber(int minesNumber) {
+        mMinesNumber = minesNumber;
+    }
+
+    /**
      * get random position for mines
      * non deterministic function
      *
      * @return a set of random position for mines
      */
     public Set<Point> generateMinesSet() {
-        Set<Point> minesPosition = new HashSet<>(GameConfiguration.MINES_NUMBER);
-        for (int i = 0; i < GameConfiguration.MINES_NUMBER; i++) {
+        Set<Point> minesPosition = new HashSet<>(mMinesNumber);
+        for (int i = 0; i < mMinesNumber; i++) {
             Point randomPoint = new Point();
             do {
-                randomPoint.x = (int) (Math.random() * (GameConfiguration.BOARD_SIZE));
-                randomPoint.y = (int) (Math.random() * (GameConfiguration.BOARD_SIZE));
+                randomPoint.x = (int) (Math.random() * (mRowsNumber));
+                randomPoint.y = (int) (Math.random() * (mColumnsNumber));
             } while (minesPosition.contains(randomPoint));
             minesPosition.add(randomPoint);
         }
@@ -200,14 +260,14 @@ public class Board {
                 mBoardSquares[i - 1][j - 1].addAdjacentMine();
             }
 
-            if (j + 1 < GameConfiguration.BOARD_SIZE) {
+            if (j + 1 < mColumnsNumber) {
                 mBoardSquares[i - 1][j + 1].addAdjacentMine();
             }
         }
 
-        if (i + 1 < GameConfiguration.BOARD_SIZE) {
+        if (i + 1 < mRowsNumber) {
             if (mBoardSquares[i + 1] == null) {
-                mBoardSquares[i + 1] = new BoardSquare[GameConfiguration.BOARD_SIZE];
+                mBoardSquares[i + 1] = new BoardSquare[mColumnsNumber];
             }
 
             if (mBoardSquares[i + 1][j] == null) {
@@ -222,7 +282,7 @@ public class Board {
                 mBoardSquares[i + 1][j - 1].addAdjacentMine();
             }
 
-            if (j + 1 < GameConfiguration.BOARD_SIZE) {
+            if (j + 1 < mColumnsNumber) {
                 if (mBoardSquares[i + 1][j + 1] == null) {
                     mBoardSquares[i + 1][j + 1] = new BoardSquare(i + 1, j + 1);
                 }
@@ -234,7 +294,7 @@ public class Board {
             mBoardSquares[i][j - 1].addAdjacentMine();
         }
 
-        if (j + 1 < GameConfiguration.BOARD_SIZE) {
+        if (j + 1 < mColumnsNumber) {
             if (mBoardSquares[i][j + 1] == null) {
                 mBoardSquares[i][j + 1] = new BoardSquare(i, j + 1);
             }
@@ -248,8 +308,8 @@ public class Board {
      * @param uncoverMode either Board.UNCOVER_WIN, Board.UNCOVER.LOSE, Board.UNCOVER_CHEAT
      */
     public void uncoverMines(int uncoverMode) {
-        for (int i = 0; i < GameConfiguration.BOARD_SIZE; i++) {
-            for (int j = 0; j < GameConfiguration.BOARD_SIZE; j++) {
+        for (int i = 0; i < mRowsNumber; i++) {
+            for (int j = 0; j < mColumnsNumber; j++) {
 
                 if (mBoardSquares[i][j].hasMine()) {
                     if (uncoverMode == UNCOVER_WIN) {
@@ -291,19 +351,19 @@ public class Board {
                     processUncoverSquare(mBoardSquares[queuedSquare.getY() - 1][queuedSquare.getX() - 1]);
                 }
 
-                if (queuedSquare.getX() + 1 < GameConfiguration.BOARD_SIZE) {
+                if (queuedSquare.getX() + 1 < mColumnsNumber) {
                     processUncoverSquare(mBoardSquares[queuedSquare.getY() - 1][queuedSquare.getX() + 1]);
                 }
             }
 
-            if (queuedSquare.getY() + 1 < GameConfiguration.BOARD_SIZE) {
+            if (queuedSquare.getY() + 1 < mRowsNumber) {
                 processUncoverSquare(mBoardSquares[queuedSquare.getY() + 1][queuedSquare.getX()]);
 
                 if (queuedSquare.getX() - 1 >= 0) {
                     processUncoverSquare(mBoardSquares[queuedSquare.getY() + 1][queuedSquare.getX() - 1]);
                 }
 
-                if (queuedSquare.getX() + 1 < GameConfiguration.BOARD_SIZE) {
+                if (queuedSquare.getX() + 1 < mColumnsNumber) {
                     processUncoverSquare(mBoardSquares[queuedSquare.getY() + 1][queuedSquare.getX() + 1]);
                 }
             }
@@ -312,7 +372,7 @@ public class Board {
                 processUncoverSquare(mBoardSquares[queuedSquare.getY()][queuedSquare.getX() - 1]);
             }
 
-            if (queuedSquare.getX() + 1 < GameConfiguration.BOARD_SIZE) {
+            if (queuedSquare.getX() + 1 < mColumnsNumber) {
                 processUncoverSquare(mBoardSquares[queuedSquare.getY()][queuedSquare.getX() + 1]);
             }
 
@@ -321,6 +381,34 @@ public class Board {
         }
 
         mSquaresQueue = null;
+    }
+
+    /**
+     * reset board squares (new game)
+     */
+    public void resetSquares() {
+        // generate mines position
+        Set<Point> minesPosition = generateMinesSet();
+
+        mBoardSquares = new BoardSquare[mRowsNumber][mColumnsNumber];
+        for (int i = 0; i < mRowsNumber; i++) {
+            if (mBoardSquares[i] == null) {
+                mBoardSquares[i] = new BoardSquare[mColumnsNumber];
+            }
+            for (int j = 0; j < mColumnsNumber; j++) {
+                if (mBoardSquares[i][j] == null) {
+                    mBoardSquares[i][j] = new BoardSquare(i, j);
+                }
+
+                if (minesPosition.contains(new Point(i, j))) {
+                    mBoardSquares[i][j].setHasMine(true);
+                    incrementeAdjacentMinesSquares(i, j);
+                }
+            }
+        }
+
+        mSquaresToDiscover = mRowsNumber * mColumnsNumber
+                - mMinesNumber;
     }
 
     private void processUncoverSquare(BoardSquare square) {

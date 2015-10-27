@@ -109,10 +109,10 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
 
         if (mSquare.isOpened()) {
             openSquare();
-        }
-
-        if (mSquare.isFlagged()) {
+        } else if (mSquare.isFlagged()) {
             showFlagImage();
+        } else {
+            setClosed();
         }
 
         if (gameStatus == Board.GAME_RUNNING) {
@@ -197,6 +197,12 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
         } else if (mSquare.getAdjacentMines() > 0) {
             showMinesCount();
         }
+    }
+
+    private void setClosed() {
+        mSquareContainer.setBackgroundResource(R.drawable.ripple_square_undiscovered);
+        mSquareText.setVisibility(View.GONE);
+        mSquareImage.setVisibility(View.GONE);
     }
 
     /**
