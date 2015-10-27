@@ -218,15 +218,6 @@ public class Board {
     }
 
     /**
-     * number of mines
-     *
-     * @param minesNumber on the board
-     */
-    public void setMinesNumber(int minesNumber) {
-        mMinesNumber = minesNumber;
-    }
-
-    /**
      * get random position for mines
      * non deterministic function
      *
