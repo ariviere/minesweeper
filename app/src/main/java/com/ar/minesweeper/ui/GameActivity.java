@@ -162,8 +162,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private void setBoardSize() {
         DisplayMetrics screenSize = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(screenSize);
-
-        mBoard.setBoardPixelsSize(screenSize.widthPixels);
+        if (mBoard.getColumnsNumber() < 8) {
+            mBoard.setBoardPixelsSize((screenSize.widthPixels / 8) * mBoard.getColumnsNumber());
+        } else {
+            mBoard.setBoardPixelsSize(screenSize.widthPixels);
+        }
     }
 
     /**
