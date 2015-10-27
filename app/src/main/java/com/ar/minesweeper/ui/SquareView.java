@@ -196,7 +196,11 @@ public class SquareView extends FrameLayout implements View.OnClickListener,
             showMineImage();
         } else if (mSquare.getAdjacentMines() > 0) {
             showMinesCount();
+        } else {
+            mSquareImage.setVisibility(View.GONE);
         }
+
+
     }
 
     private void setClosed() {
