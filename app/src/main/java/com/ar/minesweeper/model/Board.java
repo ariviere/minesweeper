@@ -61,6 +61,9 @@ public class Board {
 
     /**
      * constructor
+     * @param rows number of rows
+     * @param columns number of columns
+     * @param minesCount number of mines
      */
     public Board(int rows, int columns, int minesCount) {
 

@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 
-import com.ar.minesweeper.settings.GameConfiguration;
 import com.ar.minesweeper.model.Board;
 import com.ar.minesweeper.model.BoardSquare;
 

@@ -116,18 +116,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
                 startActivityForResult(settingsIntent, SettingsActivity.ACTIVITY_CODE);
                 break;
+            default:
         }
         return true;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && requestCode == SettingsActivity.ACTIVITY_CODE) {
-            if (mBoard.getColumnsNumber() != GameConfiguration.getBoardColumnsNumber(this)
-                    || mBoard.getRowsNumber() != GameConfiguration.getBoardRowsNumber(this)
-                    || mBoard.getMinesNumber() != GameConfiguration.getBoardMinesNumber(this)) {
-                initGame();
-            }
+        if (resultCode == Activity.RESULT_OK && requestCode == SettingsActivity.ACTIVITY_CODE
+                && (mBoard.getColumnsNumber() != GameConfiguration.getBoardColumnsNumber(this)
+                || mBoard.getRowsNumber() != GameConfiguration.getBoardRowsNumber(this)
+                || mBoard.getMinesNumber() != GameConfiguration.getBoardMinesNumber(this))) {
+            initGame();
         }
     }
 

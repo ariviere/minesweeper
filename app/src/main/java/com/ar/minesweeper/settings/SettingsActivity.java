@@ -68,6 +68,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             case R.id.custom_button:
                 mCustomContainer.setVisibility(View.VISIBLE);
                 break;
+            default:
+
 
         }
     }
@@ -122,7 +124,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.validate:
-
                 if (mCustomButton.isChecked()) {
                     if (TextUtils.isEmpty(mColumnsInput.getText().toString())
                             || TextUtils.isEmpty(mRowsInput.getText().toString())
@@ -132,9 +133,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                         return true;
                     }
 
-                    int customColumns = Integer.valueOf(mColumnsInput.getText().toString());
-                    int customRows = Integer.valueOf(mRowsInput.getText().toString());
-                    int customMines = Integer.valueOf(mMinesInput.getText().toString());
+                    int customColumns = Integer.parseInt(mColumnsInput.getText().toString());
+                    int customRows = Integer.parseInt(mRowsInput.getText().toString());
+                    int customMines = Integer.parseInt(mMinesInput.getText().toString());
 
                     if (customColumns > 16 || customColumns < 4) {
                         mErrorMessage.setVisibility(View.VISIBLE);
@@ -158,6 +159,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 setResult(RESULT_OK);
                 finish();
                 break;
+
+            default:
         }
         return true;
     }
